@@ -65,7 +65,13 @@ class EpisodeDetailsViewController: UIViewController {
         lblVoteAverage.text = "\(episodeDetails.vote_average)".appending(" / 10")
         lblOverview.text = episodeDetails.overview!
         lblName.text = episodeDetails.name!
-        lblFirstAirDate.text = dateFormatter.string(from: episodeDetails.first_air_date!)
+        if episodeDetails.first_air_date != nil{
+            lblFirstAirDate.text = dateFormatter.string(from: episodeDetails.first_air_date!)
+        }
+        else{
+            lblFirstAirDate.text = ""
+        }
+        
         var genres = ""
         for genre in episodeDetails.genres!{
             if genres.isEmpty {
