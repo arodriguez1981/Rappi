@@ -118,6 +118,7 @@ extension EpisodeDetails{
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try? container.encode(name, forKey: .name)
+       
         try? container.encode(in_production, forKey: .in_production)
         try? container.encode(homepage, forKey: .homepage)
         try? container.encode(type, forKey: .type)

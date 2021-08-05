@@ -7,9 +7,11 @@
 //
 
 import UIKit
+import youtube_ios_player_helper
 
 class EpisodeDetailsViewController: UIViewController {
     
+    @IBOutlet weak var player: YTPlayerView!
     @IBOutlet var ivbackPhoto: UIImageView!
     @IBOutlet var lblGenres: UILabel!
     @IBOutlet var lblOverview: UILabel!
@@ -34,12 +36,7 @@ class EpisodeDetailsViewController: UIViewController {
     
     
     func getEpisodeDetails() {
-        var params = [String: AnyObject]()
-        headers = [
-            "Authorization": "Bearer " + (accessToken),
-            "Accept": "application/json;charset=utf-8"
-        ]
-        params["redirect_to"] = "http://www.themoviedb.org/" as AnyObject
+        
         NetConnection.getEpisodeDetails(elementId, response: ResponseHandler(startHandler: nil , success: { response in
             DispatchQueue.main.async(execute: {() -> Void in
                 let data = AppDelegate.jsonToNSData(response as AnyObject)
@@ -86,7 +83,49 @@ class EpisodeDetailsViewController: UIViewController {
             let urlImageBack = "https://image.tmdb.org/t/p/w185/" + episodeDetails.backdrop_path!
             ivbackPhoto.setImageWith(URL(string: urlImageBack)!, placeholderImage: UIImage(named:"star"))
         }
+        getVideos(episodeDetails)
+    }
+    
+    
+    private func getVideos(_ episodeDetails: EpisodeDetails) {
+        var media = Array<Any>()
+        var params = [String: AnyObject]()
+        workItem = DispatchWorkItem{
+            NetConnection.getEpisodeVideos(self.elementId, response: ResponseHandler(startHandler: nil , success: { response in
+                for item in response["results"] as! [JSON]{
+                    media.append(self.createAndStoreFromResponse(item)!)
+                }
+                
+                if media.count > 0{
+                    self.playVideo((media[0] as! Video).key)
+                }
+                else{
+                    self.player.isHidden = true
+                }
+                return nil
+            } , failure: {(_ error: NSError, data: Data?) in
+            }))
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() , execute: workItem!)
+    }
+    
+    
+    func createAndStoreFromResponse(_ item: JSON) -> Any?{
+        let data = AppDelegate.jsonToNSData(item as AnyObject)
+        let decoder = JSONDecoder()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        decoder.dateDecodingStrategy = .formatted(dateFormatter)
+        let currentMedia = try? decoder.decode(Video.self, from: data!)
+        return currentMedia
         
+    }
+    
+    private func playVideo(_ trailerKey: String) {
+            player.isHidden = false
+            player.load(withVideoId: trailerKey)
         
     }
     

@@ -7,12 +7,12 @@
 //
 
 import UIKit
-
+import youtube_ios_player_helper
 
 class MovieDetailsViewController: UIViewController {
     
     let dateFormatter = DateFormatter()
-    
+    @IBOutlet weak var player: YTPlayerView!
     @IBOutlet var lblStatus: UILabel!
     @IBOutlet var lblPopularity: UILabel!
     @IBOutlet var lblVoteCount: UILabel!
@@ -85,6 +85,49 @@ class MovieDetailsViewController: UIViewController {
             let urlImage = "https://image.tmdb.org/t/p/w185/" + movieDetails.poster_path!
             ivPhoto.setImageWith(URL(string: urlImage)!, placeholderImage: UIImage(named:"star"))
         }
+        getVideos(movieDetails)
+    }
+    
+    private func getVideos(_ movieDetails: MovieDetails) {
+        var media = Array<Any>()
+        var params = [String: AnyObject]()
+        workItem = DispatchWorkItem{
+            NetConnection.getVideos(self.elementId, response: ResponseHandler(startHandler: nil , success: { response in
+                for item in response["results"] as! [JSON]{
+                    media.append(self.createAndStoreFromResponse(item)!)
+                }
+                
+                if media.count > 0{
+                    self.playVideo((media[0] as! Video).key)
+                }
+                else{
+                    self.player.isHidden = true
+                }
+                return nil
+            } , failure: {(_ error: NSError, data: Data?) in
+            }))
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() , execute: workItem!)
+    }
+    
+    
+    func createAndStoreFromResponse(_ item: JSON) -> Any?{
+        let data = AppDelegate.jsonToNSData(item as AnyObject)
+        let decoder = JSONDecoder()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        decoder.dateDecodingStrategy = .formatted(dateFormatter)
+        let currentMedia = try? decoder.decode(Video.self, from: data!)
+        return currentMedia
+        
+    }
+    
+    private func playVideo(_ trailerKey: String) {
+            player.isHidden = false
+            player.load(withVideoId: trailerKey)
+        
     }
     
     

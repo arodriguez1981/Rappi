@@ -9,6 +9,7 @@ target 'Rappi iOS Test' do
   pod 'RealmSwift'
   pod 'AFNetworking'
   pod 'Alamofire', '~> 4.8.2'
+  pod "youtube-ios-player-helper"
   # Pods for Rappi iOS Test
 
   target 'Rappi iOS TestTests' do

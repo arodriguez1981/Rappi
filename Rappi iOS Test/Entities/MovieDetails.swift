@@ -36,8 +36,10 @@ class MovieDetails: Object, Codable  {
     @Published var production_companies : Array<ProductionCompany>?
     @Published var genres : Array<Genre>?
     
+    
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        
         homepage = try? container.decode(String.self, forKey: .homepage)
         status = try? container.decode(String.self, forKey: .status)
         poster_path = try? container.decode(String.self, forKey: .poster_path)
@@ -81,6 +83,7 @@ extension MovieDetails{
         case status        
         case poster_path
         case adult
+        
         case overview
         case release_date
         case id
@@ -116,6 +119,7 @@ extension MovieDetails{
         try? container.encode(original_title, forKey: .original_title)
         try? container.encode(imdb_id, forKey: .imdb_id)
         try? container.encode(original_language, forKey: .original_language)
+        
         try? container.encode(title, forKey: .title)
         try? container.encode(revenue, forKey: .revenue)
         try? container.encode(runtime, forKey: .runtime)

@@ -80,14 +80,14 @@ class NetConnection: NSObject {
     
     class func getVideos(_ movieId: Int, response: ResponseHandler) {
         response.startHandler?()
-        manager.request(WS_TMDB3 + "movie/\(movieId)/videos?api_key=\(APIKey)&language=en-US", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers)
+        manager.request(WS_TMDB3 + "movie/\(movieId)/videos?api_key=\(APIKey)", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers)
             
             .responseJSON(completionHandler: response.responseHandler)
     }
     
     class func getEpisodeVideos(_ episodeId: Int, response: ResponseHandler) {
         response.startHandler?()
-        manager.request(WS_TMDB3 + "tv/\(episodeId)/videos?api_key=\(APIKey)&language=en-US", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers)
+        manager.request(WS_TMDB3 + "tv/\(episodeId)/videos?api_key=\(APIKey)", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers)
             
             .responseJSON(completionHandler: response.responseHandler)
     }
