@@ -36,12 +36,6 @@ class MovieDetailsViewController: UIViewController {
     
     
     func getMovieDetails() {
-        var params = [String: AnyObject]()
-        headers = [
-            "Authorization": "Bearer " + (accessToken),
-            "Accept": "application/json;charset=utf-8"
-        ]
-        params["redirect_to"] = "http://www.themoviedb.org/" as AnyObject
         NetConnection.getMovieDetails(elementId, response: ResponseHandler(startHandler: nil , success: { response in
             DispatchQueue.main.async(execute: {() -> Void in
                 let data = AppDelegate.jsonToNSData(response as AnyObject)

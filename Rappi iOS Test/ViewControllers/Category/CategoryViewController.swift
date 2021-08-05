@@ -21,6 +21,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
     var totalResults = 0
     var workItem: DispatchWorkItem?
     var areMovie = true
+    @IBOutlet var scrollView: UIScrollView!
     @IBOutlet weak var loading: UIActivityIndicatorView!
     @IBOutlet weak var viewContainerCollections: UIView!
     @IBOutlet weak var lblNoData: UILabel!
@@ -105,10 +106,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
             self.viewContainerCollections.isHidden = false
             self.lblNoData.isHidden = true
         }
-        headers = [
-            "Authorization": "Bearer " + (currentAccessToken),
-            "Accept": "application/json;charset=utf-8"
-        ]
+        
         self.cSearchList.removeAll(keepingCapacity: false)
         if type == "Popular"{
             cSearchList = self.cSearchPopular

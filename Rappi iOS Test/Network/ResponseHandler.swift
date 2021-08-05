@@ -41,8 +41,7 @@ class ResponseHandler {
                 self.onSuccess(response.result.value!)
             case .failure(let error):
                 let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: nil))
-                alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
                 AppDelegate.getTopMostViewController()?.present(alert, animated: true, completion: nil)
                 self.onFailure(error as NSError, data: response.data)
             }
